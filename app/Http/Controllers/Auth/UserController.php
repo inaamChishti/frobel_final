@@ -21,7 +21,9 @@ class UserController extends Controller
     public function index(Request $request)
     {
 
-        $users = User::select('id', 'username', 'password', 'email', 'usertype');
+        $users = User::where('usertype', '!=', 'student')
+                    ->select('id', 'username', 'password', 'email', 'usertype');
+
         $roles = Role::all();
         if ($request->ajax()) {
             return Datatables::of($users)

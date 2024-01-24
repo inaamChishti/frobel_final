@@ -22,16 +22,17 @@ class StudentTestController extends Controller
     public function index(Request $request)
     {
         $students = Student::all();
-        $student_tests = StudentTest::select('family_id', 'student_name', 'subject', 'book', 'test_no', 'attempt', 'date', 'percentage', 'status', 'tutor', 'updated_by');
+        $student_tests = StudentTest::select('family_id', 'student_name', 'subject', 'book', 'test_no', 'attempt', 'test_date', 'percentage', 'status', 'tutor', 'tutor_updated_by');
         if ($request->ajax()) {
             return Datatables::of($student_tests)
                 ->addIndexColumn()
-                ->addColumn('date', function($row){
+                ->addColumn('test_date', function($row){
                     return date('d-m-Y', strtotime($row->date));
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
+            // dd($students);
         return view('auth.student.test.index', compact('student_tests', 'students'));
     }
     public function create()

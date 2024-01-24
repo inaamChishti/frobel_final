@@ -180,6 +180,9 @@
                             @if (Auth::user()->usertype == 'Supervisors')
                                 Supervisor
                             @endif
+                            @if (Auth::user()->usertype == 'student')
+                            Parents Dashboard
+                        @endif
                         @endif
                     </a>
                     <a href="javascript:void(0)" class="layout-sidenav-toggle sidenav-link text-large ml-auto">
@@ -813,6 +816,16 @@ this.style.color='white';"><i
                                 </a>
                             </li>
                             @endif
+                            <li class="sidenav-item hover  ">
+                                <a href="{{ route('student.logins') }}" class="sidenav-link"
+                                    onmouseover="this.style.backgroundColor='white';
+                        this.style.color='#2a72d6';"
+                                    onmouseout="this.style.backgroundColor='#0d74f5';
+                         this.style.color='white';"><i
+                                        class="sidenav-icon fa fa-file "></i>
+                                    <div>Student Logins</div>
+                                </a>
+                            </li>
                         @endif
 
                     </ul>
@@ -966,7 +979,11 @@ this.style.color='white';"><i
                 @endif
 
 
+
+
             </div>
+
+
             <!-- / Layout sidenav -->
 
             <!-- Layout container -->

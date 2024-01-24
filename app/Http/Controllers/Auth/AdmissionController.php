@@ -239,19 +239,20 @@ class AdmissionController extends Controller
 
             });
 
-            $user = new User;
-            $user->username = $request->family_id;
-            $user->email = $request->guardian_email;
-            $randomPassword = 'frobel' . rand(1000, 9999);
-            $user->password = $randomPassword;
-            $user->usertype = 'student';
-            $user->save();
-            $mailContent = "Hello,\n\n";
-            $mailContent .= "Your username: " . $user->username . "\n";
-            $mailContent .= "Your password: " . $randomPassword . "\n\n";
-            $mailContent .= "Thank you for registering.\n";
+            // $user = new User;
+            // $user->username = $request->family_id;
+            // $user->email = $request->guardian_email;
+            // $randomPassword = 'frobel' . rand(1000, 9999);
+            // $user->password = $randomPassword;
+            // $user->usertype = 'student';
+            // $user->save();
+            // $mailContent = "Hello,\n\n";
+            // $mailContent .= "Your username: " . $user->username . "\n";
+            // $mailContent .= "Your password: " . $randomPassword . "\n\n";
+            // $mailContent .= "Thank you for registering.\n";
+            // // Mail::to($user->email)->send(['text' => $mailContent]);
 
-            // Mail::to($user->email)->send(['text' => $mailContent]);
+
         } catch (\Exception $e) {
             dd($e);
         }

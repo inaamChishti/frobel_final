@@ -6,11 +6,13 @@ use App\Http\Requests\CommentRequest;
 use DataTables;
 use App\Models\Comment;
 use App\Models\Admission;
+use App\Models\User;
+use App\Models\Role;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-
+use Svg\Tag\Rect;
 
 class CommentController extends Controller
 {
@@ -149,6 +151,55 @@ public function getfamilyReport(Request $request, $id)
     public function ActiveInactive()
     {
       return view('reports.activeInactiveStudents');
+    }
+
+    public function logins(Request $request)
+    {
+        $users = User::where('usertype', 'student')->get(['id', 'username', 'password','email', 'usertype']);
+        // dd($users->take(10));
+
+        $roles = Role::all();
+        if ($request->ajax()) {
+            return Datatables::of($users)
+                        ->addIndexColumn()
+                        ->addColumn('action', function($row){
+                            // <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" title="View" class="btn btn-sm btn-success view viewButton">View </a>
+                            $btn = '
+
+                            <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" title="Edit" class="btn btn-sm btn-primary edit editButton">Edit </a>
+
+                               ';
+                            return $btn;
+                        })
+                        // ->addColumn('id', function($row){
+
+                        //         $roles = $row->load('roles')->roles;
+                        //         if($roles->count() <= 0){
+                        //             return '<span class="badge badge-pill badge-danger">No Role</span>';
+                        //         }
+                        //         else
+                        //         {
+                        //             $roleName = '';
+                        //             foreach($roles as $role){
+                        //                 $roleName .= ' <span class="badge badge-pill badge-primary">' .$role->name. '</span>';
+                        //             }
+                        //             return $roleName;
+                        //         }
+                        // })
+                        ->addColumn('password', function($row){
+                            if(! $row->password){
+                                return '';
+                            }
+                            else
+                            {
+                                return $row->password;
+                            }
+                        })
+                        ->rawColumns(['action', 'id'])
+                        ->make(true);
+        }
+
+        return view('auth.student_logins.index', compact('users','roles'));
     }
 
 }

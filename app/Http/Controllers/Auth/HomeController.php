@@ -19,7 +19,13 @@ class HomeController extends Controller
     public function index()
     {
 
-        $engCount = Attendance::where('subject', 'English')->count();
+        if(Auth::user()->usertype == 'student')
+        {
+            return view('auth.parent.index');
+        }
+        else
+        {
+            $engCount = Attendance::where('subject', 'English')->count();
         $scienceCount = Attendance::where('subject', 'Science')->count();
         $physicsCount = Attendance::where('subject', 'Physics')->count();
         $chemistryCount = Attendance::where('subject', 'Chemistry')->count();
@@ -38,6 +44,8 @@ class HomeController extends Controller
         $family_ids = Admission::where('familystatus','Active')->pluck('familyno');
         $studentz = $studentz = DB::table('studentdata')->whereIn('admissionid',$family_ids)->count();
         return view('auth.home',compact('studentz','engCount', 'scienceCount', 'physicsCount', 'chemistryCount', 'mathematicsCount', 'eLanguageCount', 'eLiteratureCount', 'psychologyCount', 'businessCount', 'geographyCount', 'historyCount', 'biologyCount', 'politicsCount', 'lawCount', 'computerScienceCount'));
+        }
+
     }
 
 }

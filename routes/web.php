@@ -15,9 +15,13 @@ use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\NoteController;
 use App\Models\User;
+use App\Models\Guardian;
+use App\Models\Student;
+use App\Http\Controllers\ParentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,12 +42,69 @@ Route::get('/rec', function () {
     return view('reports.receipt');
 
 });
-Route::get('/out', function () {
+Route::get('/logout', function () {
     Auth::logout();
 
 });
 
 
+Route::middleware(['auth'])->prefix('parent')->group(function () {
+    Route::get('view-attendance', [ParentController::class, 'viewAttendance'])->name('view.attendance');
+    Route::get('view-tests', [ParentController::class, 'viewTests'])->name('view.tests');
+
+});
+
+
+Route::get('/oneTimeJob', function () {
+    set_time_limit(3600);
+    $guardians = Guardian::select('Guardianid', 'guardiantel')->distinct()->get();
+    $flattenedData = [];
+
+    foreach ($guardians as $guardian) {
+        $admissionIds = Student::where('guardianid', $guardian->Guardianid)->first();
+
+        if (!empty($admissionIds->admissionid)) {
+            $admissionIdsString = $admissionIds->admissionid;
+
+            // Generate a password starting with 'fobel'
+            // Generate a random 5 to 6 digit number
+            $password = 'fobel' . str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
+
+
+            // Create a new user record
+            $user = new User();
+            $user->username = $admissionIdsString;
+            $user->password = $password;
+
+            // Set email based on 'guardiantel'
+            $user->email = ($guardian->guardiantel && strpos($guardian->guardiantel, '.com') !== false) ? $guardian->guardiantel : 'noemail@mail.com';
+
+            // Set usertype to 'student'
+            $user->usertype = 'student';
+
+            // Save the user record
+            $user->save();
+
+            // Send email if conditions are met
+            if ($user->email != 'noemail@mail.com') {
+                // Send email directly without using a separate mail class
+                // Mail::send([], [], function ($message) use ($user, $password) {
+                //     $message->to($user->email)
+                //         ->subject('Your Subject Here')
+                //         ->setBody("<p>Hello $user->username, your password is: $password", 'text/html');
+                // });
+            }
+
+            $flattenedData[] = [
+                'guardianid' => $guardian->Guardianid,
+                'guardiantel' => $guardian->guardiantel,
+                'admissionids' => $admissionIdsString,
+            ];
+        }
+    }
+
+    dd($flattenedData);
+});
 Auth::routes([
     // 'register' => false
 ]);
@@ -177,6 +238,7 @@ Route::middleware('auth')->group(function() {
     Route::get('getMedicalReport',[CommentController::class,'getMedicalReport']);
     Route::get('getfamilyReport/{id}',[CommentController::class,'getfamilyReport']);
     Route::get('student/ActiveInactive',[CommentController::class,'ActiveInactive'])->name('student.ActiveInactive');
+    Route::get('student/logins',[CommentController::class,'logins'])->name('student.logins');
 
 
 

@@ -1,4 +1,4 @@
-@extends('layouts.auth')
+@extends('layouts.parent.auth')
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('assets/libs/datatables/datatables.css') }}">
@@ -23,27 +23,23 @@
             <div class="col-md-6">
                 <div class="form-group ml-2 mr-2">
                     <label>Family ID</label>
-                    <input type="number" name="family_id" id="family_id" class="form-control">
+                    <input type="number" name="family_id" id="family_id" disabled value="{{Auth::user()->username}}" class="form-control">
                 </div>
             </div>
 
-            <div class="col-md-6">
+            {{-- <div class="col-md-6">
                 <div class="form-group ml-2 mr-2">
                     <label>Student</label>
                     <select name="student_name" id="student_name" class="form-control">
                         <option value="" selected>Choose Option</option>
-
                         @if (count($students) > 0)
                             @foreach ($students as $student)
-                            @php
-                            $fullName = $student->studentname . ' ' . $student->studentsur;
-                            @endphp
-                            <option style="color: black;" value="{{ $fullName }}">{{ $fullName }}</option>
-                                @endforeach
-                            @endif
+                                <option value="{{ $student->name }}">{{ $student->name }}</option>
+                            @endforeach
+                        @endif
                     </select>
                 </div>
-            </div>
+            </div> --}}
 
         </div>
 
@@ -101,7 +97,7 @@ $(document).ready(function() {
     var table = $('#example').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('admin.student.test.index') }}",
+        ajax: "{{ route('view.tests') }}",
         columns: [
             {data: 'family_id'},
             {data: 'student_name'},
