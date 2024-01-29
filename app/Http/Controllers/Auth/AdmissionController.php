@@ -246,12 +246,19 @@ class AdmissionController extends Controller
             // $user->password = $randomPassword;
             // $user->usertype = 'student';
             // $user->save();
-            // $mailContent = "Hello,\n\n";
-            // $mailContent .= "Your username: " . $user->username . "\n";
-            // $mailContent .= "Your password: " . $randomPassword . "\n\n";
-            // $mailContent .= "Thank you for registering.\n";
-            // // Mail::to($user->email)->send(['text' => $mailContent]);
 
+            // $loginUrl = 'https://frobelschoolsystemnew.frobel.co.uk/login';
+            // $subject = 'Welcome to Frobel School System - Your Login Credentials';
+            // $mailContent = "<p>Dear Parent,</p>";
+            // $mailContent .= "<p>We are delighted to welcome you to Frobel School System.</p>";
+            // $mailContent .= "<p>Your login credentials for accessing details about your child are as follows:</p>";
+            // $mailContent .= "<p><strong>Username:</strong> $user->username</p>";
+            // $mailContent .= "<p><strong>Password:</strong> $randomPassword</p>";
+            // $mailContent .= "<p>Please click the following button to log in:</p>";
+            // $mailContent .= "<a href='$loginUrl'><button style='padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;'>Login Now</button></a>";
+            // $mailContent .= "<p>If you have any questions or concerns, feel free to contact our support team.</p>";
+            // $mailContent .= "<p>Best regards,<br>Frobel School System</p>";
+            // Mail::to($user->email)->send(['html' => $mailContent])->subject($subject);
 
         } catch (\Exception $e) {
             dd($e);

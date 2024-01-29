@@ -17,6 +17,7 @@ use App\Http\Controllers\NoteController;
 use App\Models\User;
 use App\Models\Guardian;
 use App\Models\Student;
+use App\Models\Admission;
 use App\Http\Controllers\ParentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -56,55 +57,99 @@ Route::middleware(['auth'])->prefix('parent')->group(function () {
 
 
 Route::get('/oneTimeJob', function () {
-    set_time_limit(3600);
-    $guardians = Guardian::select('Guardianid', 'guardiantel')->distinct()->get();
-    $flattenedData = [];
+    ini_set('max_execution_time', 360000);
 
-    foreach ($guardians as $guardian) {
-        $admissionIds = Student::where('guardianid', $guardian->Guardianid)->first();
+    $studentDataForActiveFamilies = DB::table('studentdata')
+    ->join(
+        DB::raw('(SELECT admissionid, MIN(studentid) as min_studentid FROM studentdata WHERE admissionid IN (SELECT familyno FROM admission WHERE familystatus = "Active") GROUP BY admissionid) as sub'),
+        function ($join) {
+            $join->on('studentdata.admissionid', '=', 'sub.admissionid')
+                ->on('studentdata.studentid', '=', 'sub.min_studentid');
+        }
+    )
+    ->select('studentdata.*')
+    ->get();
 
-        if (!empty($admissionIds->admissionid)) {
-            $admissionIdsString = $admissionIds->admissionid;
+    $resultCollection = collect();
 
-            // Generate a password starting with 'fobel'
-            // Generate a random 5 to 6 digit number
-            $password = 'fobel' . str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
+    foreach ($studentDataForActiveFamilies as $student) {
+        $guardians = Guardian::where('Guardianid', $student->guardianid)->select('Guardianid', 'guardiantel')->first();
 
-
-            // Create a new user record
-            $user = new User();
-            $user->username = $admissionIdsString;
-            $user->password = $password;
-
-            // Set email based on 'guardiantel'
-            $user->email = ($guardian->guardiantel && strpos($guardian->guardiantel, '.com') !== false) ? $guardian->guardiantel : 'noemail@mail.com';
-
-            // Set usertype to 'student'
-            $user->usertype = 'student';
-
-            // Save the user record
-            $user->save();
-
-            // Send email if conditions are met
-            if ($user->email != 'noemail@mail.com') {
-                // Send email directly without using a separate mail class
-                // Mail::send([], [], function ($message) use ($user, $password) {
-                //     $message->to($user->email)
-                //         ->subject('Your Subject Here')
-                //         ->setBody("<p>Hello $user->username, your password is: $password", 'text/html');
-                // });
-            }
-
-            $flattenedData[] = [
-                'guardianid' => $guardian->Guardianid,
-                'guardiantel' => $guardian->guardiantel,
-                'admissionids' => $admissionIdsString,
-            ];
+        if ($guardians) {
+            $resultCollection->push([
+                'guardianid' => $guardians->Guardianid,
+                'guardiantel' => $guardians->guardiantel,
+                'family_id' => $student->admissionid,
+            ]);
         }
     }
 
-    dd($flattenedData);
+    foreach ($resultCollection as $result) {
+        $guardiantel = strpos($result['guardiantel'], '.com') !== false ? $result['guardiantel'] : 'noemail@mail.com';
+        $isSent = $guardiantel === 'noemail@mail.com' ? 1 : 0;
+
+        DB::table('email_job')->insert([
+            'guardianid' => $result['guardianid'],
+            'guardiantel' => $guardiantel,
+            'family_id' => $result['family_id'],
+            'is_sent' => $isSent,
+        ]);
+    }
+
+    $insertedData = DB::table('email_job')->get();
+
+    dd($insertedData);
+
+
 });
+
+
+Route::get('/secondJob', function () {
+    ini_set('max_execution_time', 36000000);
+
+    $insertedData = DB::table('email_job')
+        ->where('guardiantel', '<>', 'noemail@mail.com')
+        ->where('is_sent', 0)
+        ->get();
+
+    foreach ($insertedData as $record) {
+        $password = 'fobel' . str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        $user = new User();
+        $user->username = $record->family_id; // Assuming 'family_id' should be used as the username
+        $user->password = $password; // Hash the password for security
+
+        $user->email = $record->guardiantel;
+        $user->usertype = 'student';
+        $user->save();
+
+        if ($user->email != 'noemail@mail.com') {
+            $loginUrl = 'https://frobelschoolsystemnew.frobel.co.uk/login';
+
+            $data = [
+                'user' => $user,
+                'password' => $password,
+                'loginUrl' => $loginUrl,
+            ];
+
+            // Send email using Laravel Mail with inline Blade template
+            Mail::send('emails.login-email', $data, function ($message) use ($user) {
+                $message->to($user->email)
+                        ->subject('Frobel School System - Login Credentials')
+                        ->embed(public_path('img/FrobelEducationWhite (1).png'), ['as' => 'logo', 'mime' => 'image/png']);
+            });
+
+
+        }
+
+        // Update 'is_sent' to 1 for the processed record
+        // DB::table('email_job')->where('id', $record->id)->update(['is_sent' => 1]);
+    }
+
+    dd('Processing complete');
+});
+
+
 Auth::routes([
     // 'register' => false
 ]);

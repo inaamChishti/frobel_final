@@ -1,17 +1,15 @@
 @extends('layouts.auth')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('assets/libs/datatables/datatables.css') }}">
-    {{-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> --}}
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"> --}}
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.0/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="{{ asset('assets/libs/datatables/datatables.css') }}">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="{{ asset('assets/css/custom-style.css') }}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
 
-    <link href="{{ asset('assets/libs/datetimepicker/css/classic.css') }}" rel="stylesheet" />
-    <link href="{{ asset('assets/libs/datetimepicker/css/classic.date.css') }}" rel="stylesheet" />
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 
     <style>
@@ -66,11 +64,6 @@
                                value="{{ request()->from_date ? request()->from_date : date('Y-m-d') }}" placeholder="yyyy-mm-dd">
                       </div>
 
-
-
-
-
-
                       <div class="col-md-4 mb-4">
                         <label class="form-label" style="font-size: 17px;">To <span id="star" style="font-size:12px;">(required)</span></label>
                         <input type="date" id="date" name="to_date" class="form-control"
@@ -90,6 +83,7 @@
                             <option @if (request()->payment_method == 'Bank Transfer') selected @endif value="Bank Transfer">Bank Transfer
                             </option>
                             <option @if (request()->payment_method == 'Adjustment') selected @endif value="Adjustment">Adjustment</option>
+                            <option @if (request()->payment_method == 'all') selected @endif value="all">All</option>
                         </select>
                     </div>
 
@@ -103,14 +97,17 @@
 
             </div>
         </form>
-        <!-- / Filters -->
+
         @isset($payments)
             {{-- @dd($payments) --}}
             @if (count($payments) > 0)
             <h6 class="text-center total"><b>Student Fees Payments - Total (£) <span id="totalPaid"></span></b></h6>
-
                     <div class="card">
                         <div class="card-datatable table-responsive" style="box-shadow: 1px 1px 5px 6px	#f07910;">
+
+
+                            <button id="exportPdfBtn" class="btn btn-primary">Export to PDF</button>
+
                             <table id="example" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
@@ -121,40 +118,27 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                     @foreach ($payments as $payment)
                                         <tr>
                                             <td>{{ $payment->paymentfamilyid }}</td>
-                                            {{-- <td>
-                                                @php
-                                                    $date = $payment->paymentdate;
-                                                    if ($date != null) {
-                                                        $startDate = date('d-m-Y', strtotime($date));
-                                                        echo $startDate;
-                                                    }
-                                                @endphp
-                                            </td> --}}
                                             <td>
                                                 @php
                                                     $date = $payment->paymentdate;
                                                     if ($date != null) {
-                                                        // Convert "YYYY-MM-DD" format to "12 December 2012"
                                                         $formattedDate = date('d F Y', strtotime($date));
-
-                                                        // // Convert "MM/DD/YYYY" format to "12 December 2012"
-                                                        // $formattedDate = date('d F Y', strtotime(str_replace('/', '-', $date)));
-
                                                         echo $formattedDate;
                                                     }
                                                 @endphp
                                             </td>
-
                                             <td>{{ $payment->paid }}</td>
                                             <td>{{ $payment->payment_method }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
+
+
+
 
 
 
@@ -170,26 +154,23 @@
 @endsection
 
 @section('scripts')
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 
-    <!--Data Table-->
-    {{-- <script type="text/javascript"  src=" https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script> --}}
-    <script src="{{ asset('assets/libs/datatables/datatables.js') }}"></script>
-    <script type="text/javascript" src=" https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
-
-
-    <!--Export table buttons-->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
-    <script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.24/build/pdfmake.min.js"></script>
-    <script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.24/build/vfs_fonts.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.1/js/buttons.print.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
 
 
+<!-- DateTimePicker -->
+<script src="{{ asset('assets/libs/datetimepicker/js/picker.js') }}"></script>
+<script src="{{ asset('assets/libs/datetimepicker/js/picker.date.js') }}"></script>
 
-
-    <script src="{{ asset('assets/libs/datetimepicker/js/picker.js') }}"></script>
-    <script src="{{ asset('assets/libs/datetimepicker/js/picker.date.js') }}"></script>
+<!-- Flatpickr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <script>
         $(document).ready(function() {
@@ -267,4 +248,25 @@
         $("#date").datepicker("setDate", today);
     });
 </script>
+<script>
+     $(document).ready(function() {
+        // Function to export the table to PDF
+        function exportToPDF() {
+            var element = document.getElementById('example');
+            html2pdf(element, {
+                margin: 10,
+                filename: 'table.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            });
+        }
+
+        // Bind the click event to the export button
+        $('#exportPdfBtn').on('click', function() {
+            exportToPDF();
+        });
+    });
+</script>
+
 @endsection

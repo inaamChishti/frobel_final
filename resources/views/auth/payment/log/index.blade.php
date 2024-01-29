@@ -105,6 +105,8 @@
               <th>Adjustment</th>
               <th>Collector</th>
               <th>Payment Date</th>
+              <th>Is deleted</th>
+              <th>Created at</th>
             </tr>
           </thead>
           <tbody>
@@ -155,7 +157,8 @@
                             }
                         @endphp
                     </td>
-
+                    <td>{{ @$payment->is_deleted }}</td>
+                    <td>{{ @$payment->created_at }}</td>
                 </tr>
                 @endforeach
 

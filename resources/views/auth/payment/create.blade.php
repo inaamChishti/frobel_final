@@ -124,31 +124,6 @@
             <!-- Existing Fees Section -->
             <section id="Existing-fee-section ">
                 <div class="row g-3 mt-4">
-
-                        {{-- <div class="col">
-                            <div class="input-group">
-                                <label class="input-group-text sticker" for="last_package">Last Package (£)</label>
-                                <input type="text" class="form-control" id="last_package" name="last_package" placeholder="Last Package" value="{{ $last_package }}" readonly>
-                            </div>
-                        </div> --}}
-
-                   {{-- <div class="col">
-                     <label for="Last Package">Last Package (£) </label>
-                   <input type="text" name="last_package" class="form-control" placeholder="Last Package" value="{{ $last_package }}" readonly>
-                </div> --}}
-
-                    {{-- <div class="col">
-                        <div class="input-group">
-                            <label class="input-group-text sticker"  for="Last Paid">Last Paid (£)</label>
-                            <input type="text" class="form-control" id="last_package" name="last_paid" placeholder="£0" value="{{ $last_paid }}" readonly>
-                        </div>
-                    </div> --}}
-
-
-                   {{-- <div class="col">
-                     <label for="Last Paid">Last Paid (£) </label>
-                      <input type="number" name="last_paid" class="form-control" placeholder="£0" value="{{ $last_paid }}" readonly>
-                   </div> --}}
                    <div class="col-md-4">
                     <div class="input-group">
                         <label class="input-group-text sticker" for="Paid up to Date"style=" background-image: linear-gradient(to right, #0082e0 , #02d5df); !important">Paid up to Date</label>
@@ -181,32 +156,6 @@
                 <button id="printBtn" class="btn btn-primary d-block mx-auto mt-5" style="width: 200px;">Print Previous Receipt</button>
 
                 <div class="row g-3 mt-4">
-
-
-                   {{-- <div class="col">
-                     <label for="Collector">Collector</label>
-                      <input type="text" name="collector" class="form-control" placeholder="Collector name" value="{{ $auth_user }}" readonly>
-                   </div> --}}
-                   {{-- <div class="col ">
-                    <div class="input-group ">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text sticker-text sticker">Collector</span>
-                        </div>
-                        <input type="text" name="collector" class="form-control" placeholder="Collector name" value="{{ $auth_user }}" readonly>
-                    </div>
-                </div> --}}
-                   {{-- <div class="col">
-                     <label for="Last Paid Date to">Last Paid</label>
-                      <input type="text" name="last_paid_date" class="form-control" placeholder="dd/mm/yyyy" value="{{ $last_payment_date ? $last_payment_date: '' }}" readonly>
-                   </div> --}}
-                   {{-- <div class="col">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text sticker-text sticker">Last Paid</span>
-                        </div>
-                        <input type="text" name="last_paid_date" class="form-control" placeholder="dd/mm/yyyy" value="{{ $last_payment_date ? $last_payment_date : '' }}" readonly>
-                    </div>
-                </div> --}}
 
                    <div class="col">
                    </div>
@@ -243,7 +192,7 @@ padding:50px;border-radius:5px; box-shadow: 1px 1px 3px 2px	#b96edd;
                      name="paid"
                      id="main_amount"
                      class="form-control"
-                      value="{{ old('paid') }}"
+                      value=""
                        placeholder="Amount only">
                   </div>
                   <div class="col">
@@ -264,7 +213,7 @@ padding:50px;border-radius:5px; box-shadow: 1px 1px 3px 2px	#b96edd;
                     <label for="Paid from" style="font-size: 14px; color: black;font-weight:bold;">Paid from<span id="star"
                         style="font-size:12px;">(required)</span></label>
                      {{-- <input type="text" name="paid_from" class="form-control datepicker" value="{{ old('paid_from') }}" placeholder="dd/mm/yyyy"> --}}
-                     <input type="text" id="datee" name="paid_from" class="form-control "  value="{{ old('paid_from') }}"
+                     <input type="text" id="datee" name="paid_from" class="form-control "  value=""
                             placeholder="dd/mm/yyyy">
 
                   </div>
@@ -272,7 +221,7 @@ padding:50px;border-radius:5px; box-shadow: 1px 1px 3px 2px	#b96edd;
                     <label for="Paid to" style="font-size: 14px; color: black;font-weight:bold;">Paid to <span id="star"
                         style="font-size:12px;">(required)</span></label>
                      {{-- <input type="text" name="paid_to" class="form-control datepicker" value="{{ old('paid_to') }}" placeholder="dd/mm/yyyy"> --}}
-                     <input type="text" id="date" name="paid_to" class="form-control "  value="{{ old('paid_to') }}"
+                     <input type="text" id="date" name="paid_to" class="form-control "  value=""
                      placeholder="dd/mm/yyyy">
 
 
@@ -282,7 +231,7 @@ padding:50px;border-radius:5px; box-shadow: 1px 1px 3px 2px	#b96edd;
                     <label for="Paid to" style="font-size: 14px; color: black;font-weight:bold;">Payment Date <span id="star"
                         style="font-size:12px;">(required)</span></label>
                      {{-- <input type="text" name="payment_date" class="form-control datepicker" value="{{ old('payment_date') }}" placeholder="dd/mm/yyyy"> --}}
-                     <input type="text" id="date" name="payment_date" class="form-control "  value="{{ old('payment_date') }}"
+                     <input type="text" id="date" name="payment_date" class="form-control "  value=""
                      placeholder="dd/mm/yyyy">
                   </div>
 
@@ -291,7 +240,7 @@ padding:50px;border-radius:5px; box-shadow: 1px 1px 3px 2px	#b96edd;
                <div class="row mt-4">
                 <div class="col">
                     <label for="comment" style="font-size: 14px; color: black;font-weight:bold;">Comment</label>
-                     <textarea name="comment" class="form-control" cols="30" rows="5" placeholder="Enter comment here...">{{ old('comment') }} {{@$comments->comments}}</textarea>
+                     <textarea name="comment" class="form-control" cols="30" rows="5" placeholder="Enter comment here...">{{@$comments->comments}}</textarea>
                   </div>
                </div>
             </section>
@@ -340,10 +289,10 @@ padding:50px;border-radius:5px; box-shadow: 1px 1px 3px 2px	#b96edd;
                         <label for="Paid" style="font-size: 14px; color: black;font-weight:bold; margin: 0; display: block; opacity: 1; -webkit-transition: .333s ease top, .333s ease opacity; transition: .333s ease top, .333s ease opacity;">
                             Paid (£) <span id="star" style="font-size:12px;">(required)</span>
                         </label>
-                        <input type="number" name="cash_payment_amount" class="form-control amount-input" value="{{ old('amount') }}" placeholder="Cash Payment Amount">
-                        <input type="number" name="card_payment_amount" class="form-control amount-input" style="display: none;" value="{{ old('amount') }}" placeholder="Card Payment Amount">
-                        <input type="number" name="bank_transfer_amount" class="form-control amount-input" style="display: none;" value="{{ old('amount') }}" placeholder="Bank Transfer Amount">
-                        <input type="number" name="adjustment_amount" class="form-control amount-input" style="display: none;" value="{{ old('amount') }}" placeholder="Adjustment Amount">
+                        <input type="number" name="cash_payment_amount" class="form-control amount-input" value="" placeholder="Cash Payment Amount">
+                        <input type="number" name="card_payment_amount" class="form-control amount-input" style="display: none;" value="" placeholder="Card Payment Amount">
+                        <input type="number" name="bank_transfer_amount" class="form-control amount-input" style="display: none;" value="" placeholder="Bank Transfer Amount">
+                        <input type="number" name="adjustment_amount" class="form-control amount-input" style="display: none;" value="" placeholder="Adjustment Amount">
                     </div>
                 </div>
 
@@ -386,6 +335,8 @@ padding:50px;border-radius:5px; box-shadow: 1px 1px 3px 2px	#b96edd;
         setTimeout(function () {
             document.getElementById('submitPayment').disabled = false;
         }, 4000); // 10000 milliseconds = 10 seconds
+
+
     });
 </script>
 
@@ -480,6 +431,11 @@ padding-left:50px;padding-right:50px;border-radius:5px; box-shadow: 1px 1px 3px 
           } else {
             // Submit the form
             $("#payment_form").submit();
+
+            var form = document.getElementById("payment_form");
+
+                // Reset the form
+                form.reset();
           }
         }
       });

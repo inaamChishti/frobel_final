@@ -31,85 +31,104 @@ class PaymentController extends Controller
 
         $from_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->from_date)));
         $to_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->to_date)));
+        // dd(Carbon::parse($from_date)->format('m/d/Y'));
         // dd($from_date,$to_date);
         $payment_method = $request->payment_method;
         // dd($request->all(),$from_date,$to_date,Carbon::parse($from_date)->format('m/d/Y'),Carbon::parse($to_date)->format('m/d/Y'));
         if($payment_method == 'Cash Payment') {
 
-            $payments = Payment::where(function ($query) use ($from_date, $to_date, $payment_method) {
-                $query->where(function ($query) use ($from_date, $to_date) {
-                    $query->whereBetween('paymentdate', [$from_date, $to_date])
-                        ->orWhereBetween('paymentdate', [
-                            Carbon::parse($from_date)->format('d/m/Y'),
-                            Carbon::parse($to_date)->format('d/m/Y')
-                        ]);
-                })
-                ->where(function($query) use ($payment_method) {
-                    $query->where('payment_method', 'Cash Payment')
-                        ->orWhere('payment_method', 'Cash Payment')
-                        ->orWhere('payment_method', 'LIKE', '%Cash%');
-                });
-            })
+            $payments = Payment::whereNotNull('payment_method')
+            ->Where('payment_method', 'LIKE', '%Cash%')->whereBetween('paymentdate', [$from_date, $to_date])
+
             ->orderByDesc('paymentid')
             ->orderByDesc('paymentdate')
             ->get();
+
 
         }
         else if ($payment_method == 'Bank Transfer') {
 
-            $payments = Payment::where(function ($query) use ($from_date, $to_date) {
-                $query->where(function ($query) use ($from_date, $to_date) {
-                    $query->whereBetween('paymentdate', [$from_date, $to_date])
-                        ->orWhereBetween('paymentdate', [
-                            Carbon::parse($from_date)->format('d/m/Y'),
-                            Carbon::parse($to_date)->format('d/m/Y')
-                        ]);
-                });
-            })
-            ->where(function ($query) use ($payment_method) {
-                $query->where('payment_method', 'Bank/Online')
-                    ->orWhere('payment_method', 'Bank Transfer')
-                    ->orWhere('payment_method', 'LIKE', '%Bank/Online%')
-                    ->orWhere('payment_method', 'LIKE', '%Bank Transfer%');
-            })
+            $payments = Payment::whereNotNull('payment_method')
+            ->Where('payment_method', 'LIKE', '%Bank%')->whereBetween('paymentdate', [$from_date, $to_date])
             ->orderByDesc('paymentid')
             ->orderByDesc('paymentdate')
             ->get();
+
+            // $payments = Payment::where(function ($query) use ($from_date, $to_date) {
+            //     $query->where(function ($query) use ($from_date, $to_date) {
+            //         $query->whereBetween('paymentdate', [$from_date, $to_date])
+            //             ->orWhereBetween('paymentdate', [
+            //                 Carbon::parse($from_date)->format('d/m/Y'),
+            //                 Carbon::parse($to_date)->format('d/m/Y')
+            //             ]);
+            //     });
+            // })
+            // ->where(function ($query) use ($payment_method) {
+            //     $query->where('payment_method', 'Bank/Online')
+            //         ->orWhere('payment_method', 'Bank Transfer')
+            //         ->orWhere('payment_method', 'LIKE', '%Bank/Online%')
+            //         ->orWhere('payment_method', 'LIKE', '%Bank Transfer%');
+            // })
+            // ->orderByDesc('paymentid')
+            // ->orderByDesc('paymentdate')
+            // ->get();
 
         }
 
         else if($payment_method == 'Card Payment') {
-            $payments = Payment::where(function ($query) use ($from_date, $to_date, $payment_method) {
-                $query->where(function ($query) use ($from_date, $to_date) {
-                    $query->whereBetween('paymentdate', [$from_date, $to_date])
-                        ->orWhereBetween('paymentdate', [
-                            Carbon::parse($from_date)->format('d/m/Y'),
-                            Carbon::parse($to_date)->format('d/m/Y')
-                        ]);
-                })
-                ->where('payment_method', 'Card Payment');
-            })
+
+            $payments = Payment::whereNotNull('payment_method')
+            ->Where('payment_method', 'LIKE', '%Card%')
+            ->whereBetween('paymentdate', [$from_date, $to_date])
             ->orderByDesc('paymentid')
             ->orderByDesc('paymentdate')
             ->get();
+            // $payments = Payment::where(function ($query) use ($from_date, $to_date, $payment_method) {
+            //     $query->where(function ($query) use ($from_date, $to_date) {
+            //         $query->whereBetween('paymentdate', [$from_date, $to_date])
+            //             ->orWhereBetween('paymentdate', [
+            //                 Carbon::parse($from_date)->format('d/m/Y'),
+            //                 Carbon::parse($to_date)->format('d/m/Y')
+            //             ]);
+            //     })
+            //     ->where('payment_method', 'Card Payment');
+            // })
+            // ->orderByDesc('paymentid')
+            // ->orderByDesc('paymentdate')
+            // ->get();
 
         }
         else if($payment_method == 'Adjustment') {
-            $payments = Payment::where(function ($query) use ($from_date, $to_date, $payment_method) {
-                $query->where(function ($query) use ($from_date, $to_date) {
-                    $query->whereBetween('paymentdate', [$from_date, $to_date])
-                        ->orWhereBetween('paymentdate', [
-                            Carbon::parse($from_date)->format('d/m/Y'),
-                            Carbon::parse($to_date)->format('d/m/Y')
-                        ]);
-                })
-                ->where(function($query) use ($payment_method) {
-                    $query->where('payment_method', 'Adjustment')
-                        // ->orWhere('payment_method', 'Bank Transfer')
-                        ->orWhere('payment_method', 'LIKE', '%Adjustment%');
-                        // ->orWhere('payment_method', 'LIKE', '%Bank Transfer%');
-                });
-            })
+            $payments = Payment::whereNotNull('payment_method')
+            ->Where('payment_method', 'LIKE', '%Adjustment%')
+            // ->Where('payment_method','Adjustment')
+            ->whereBetween('paymentdate', [$from_date, $to_date])
+            ->orderByDesc('paymentid')
+            ->orderByDesc('paymentdate')
+            ->get();
+            // $payments = Payment::where(function ($query) use ($from_date, $to_date, $payment_method) {
+            //     $query->where(function ($query) use ($from_date, $to_date) {
+            //         $query->whereBetween('paymentdate', [$from_date, $to_date])
+            //             ->orWhereBetween('paymentdate', [
+            //                 Carbon::parse($from_date)->format('d/m/Y'),
+            //                 Carbon::parse($to_date)->format('d/m/Y')
+            //             ]);
+            //     })
+            //     ->where(function($query) use ($payment_method) {
+            //         $query->where('payment_method', 'Adjustment')
+            //             // ->orWhere('payment_method', 'Bank Transfer')
+            //             ->orWhere('payment_method', 'LIKE', '%Adjustment%');
+            //             // ->orWhere('payment_method', 'LIKE', '%Bank Transfer%');
+            //     });
+            // })
+            // ->orderByDesc('paymentid')
+            // ->orderByDesc('paymentdate')
+            // ->get();
+        }
+        else if($payment_method == 'all')
+        {
+            $payments = Payment::whereNotNull('payment_method')
+            ->whereBetween('paymentdate', [$from_date, $to_date])
             ->orderByDesc('paymentid')
             ->orderByDesc('paymentdate')
             ->get();
@@ -120,22 +139,29 @@ class PaymentController extends Controller
             //     $query->where('paymentdate', '>=' , $from_date)
             //     ->where('paymentdate', '<=' , $to_date);
             // })
-            $payments = Payment::where(function ($query) use ($from_date, $to_date) {
-                $query->whereBetween('paymentdate', [$from_date, $to_date]);
-            })
-            ->orWhere(function ($query) use ($from_date, $to_date) {
-                $query->whereBetween('paymentdate', [
-                    Carbon::parse($from_date)->format('Y-m-d'),
-                    Carbon::parse($to_date)->format('Y-m-d')
-                ]);
-            })
-            ->where(function($query) use ($payment_method) {
-                $query->where('payment_method', '=' , $payment_method);
-            })
+            // $payments = Payment::where(function ($query) use ($from_date, $to_date) {
+            //     $query->whereBetween('paymentdate', [$from_date, $to_date]);
+            // })
+            // ->orWhere(function ($query) use ($from_date, $to_date) {
+            //     $query->whereBetween('paymentdate', [
+            //         Carbon::parse($from_date)->format('Y-m-d'),
+            //         Carbon::parse($to_date)->format('Y-m-d')
+            //     ]);
+            // })
+            // ->where(function($query) use ($payment_method) {
+            //     $query->where('payment_method', '=' , $payment_method);
+            // })
+            // ->orderByDesc('paymentid')
+            // ->orderByDesc('paymentdate')
+            // ->get();
+            $payments = Payment::whereNotNull('payment_method')
+            ->whereNull('is_deleted')
+            ->whereBetween('paymentdate', [$from_date, $to_date])
             ->orderByDesc('paymentid')
             ->orderByDesc('paymentdate')
             ->get();
-        }
+
+            }
 
         $total_sum = $payments->sum('paid');
         // dd($payments);
@@ -314,26 +340,92 @@ class PaymentController extends Controller
             }
 
 
-            // dd($request->all(),$request['payment_method']);
-             $payment = payment::create([
+            $existingPayment = Payment::where([
                 'paymentfrom' => $paid_from,
                 'paymentto' => $paid_to,
+                'paymentfamilyid' => $family_id,
+                'paymentdate' => date('Y-m-d', strtotime(str_replace('/', '-', $request->payment_date))),
                 'paid' => $request->paid,
-                'paymentfamilyid' => $family_id,//$paid_up_to_date,
-                'paymentdate' => date('Y-m-d',strtotime(str_replace('/', '-',  $request->payment_date))),//\Carbon\Carbon::now()->format('Y-m-d'),
                 'package' => $request->package,
                 'collector' => auth()->user()->username,
                 'balance' => $request->balance,
-                // 'comment' => $request->comment,
-                'payment_method' => $request['payment_method'],
-                'payment_detail' => $request->paid,
-                'bank_transfer' => $request->input('bank_transfer_amount'),
-                'adjustment' => $request->input('adjustment_amount'),
-                'card_payment' => $request->input('card_payment_amount'),
-                'cash_payment' => $request->input('cash_payment_amount'),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            ])->latest('created_at')->first();
+
+            // Check if the existing record is within the last 1.5 minutes
+            // dd($existingPayment,now()->diffInMinutes($existingPayment->created_at));
+            if ($existingPayment && now()->diffInMinutes($existingPayment->created_at) <= 2) {
+
+
+            }
+            else
+            {
+                $payment = Payment::create([
+                    'paymentfrom' => $paid_from,
+                    'paymentto' => $paid_to,
+                    'paymentfamilyid' => $family_id,
+                    'paymentdate' => date('Y-m-d', strtotime(str_replace('/', '-', $request->payment_date))),
+                    'paid' => $request->paid,
+                    'package' => $request->package,
+                    'collector' => auth()->user()->username,
+                    'balance' => $request->balance,
+                    'payment_method' => $request['payment_method'],
+                    'payment_detail' => $request->paid,
+                    'bank_transfer' => $request->input('bank_transfer_amount'),
+                    'adjustment' => $request->input('adjustment_amount'),
+                    'card_payment' => $request->input('card_payment_amount'),
+                    'cash_payment' => $request->input('cash_payment_amount'),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
+
+            // dd($request->all(),$request['payment_method']);
+            // $payment = Payment::firstOrNew([
+            //     'paymentfrom' => $paid_from,
+            //     'paymentto' => $paid_to,
+            //     'paymentfamilyid' => $family_id,
+            //     'paymentdate' => date('Y-m-d', strtotime(str_replace('/', '-', $request->payment_date))),
+            //     'paid' => $request->paid,
+            //     'package' => $request->package,
+            //     'collector' => auth()->user()->username,
+            //     'balance' => $request->balance,
+            // ]);
+            // // Check if the record already exists
+            // if (!$payment->exists) {
+            //     $payment->fill([
+            //         // 'comment' => $request->comment,
+            //         'payment_method' => $request['payment_method'],
+            //         'payment_detail' => $request->paid,
+            //         'bank_transfer' => $request->input('bank_transfer_amount'),
+            //         'adjustment' => $request->input('adjustment_amount'),
+            //         'card_payment' => $request->input('card_payment_amount'),
+            //         'cash_payment' => $request->input('cash_payment_amount'),
+            //         'created_at' => now(),
+            //         'updated_at' => now(),
+            //     ])->save();
+            // }
+
+
+            //  $payment = payment::create([
+            //     'paymentfrom' => $paid_from,
+            //     'paymentto' => $paid_to,
+            //     'paid' => $request->paid,
+            //     'paymentfamilyid' => $family_id,//$paid_up_to_date,
+            //     'paymentdate' => date('Y-m-d',strtotime(str_replace('/', '-',  $request->payment_date))),//\Carbon\Carbon::now()->format('Y-m-d'),
+            //     'package' => $request->package,
+            //     'collector' => auth()->user()->username,
+            //     'balance' => $request->balance,
+            //     // 'comment' => $request->comment,
+            //     'payment_method' => $request['payment_method'],
+            //     'payment_detail' => $request->paid,
+            //     'bank_transfer' => $request->input('bank_transfer_amount'),
+            //     'adjustment' => $request->input('adjustment_amount'),
+            //     'card_payment' => $request->input('card_payment_amount'),
+            //     'cash_payment' => $request->input('cash_payment_amount'),
+            //     'created_at' => now(),
+            //     'updated_at' => now(),
+            // ]);
 
 
             \DB::table('payment_comments')
@@ -454,31 +546,29 @@ class PaymentController extends Controller
                         // Create a JavaScript function that opens the PDF in a new window or tab and redirects back to the previous page
                         $url = '/admin/payments/show?family_id=' . $family_id;
                         $script = "
-                                <script>
-                                    var pdfOpened = false;
+                        <script>
+                            var pdfOpened = false;
 
-                                    function openPdf() {
-                                        if (!pdfOpened) {
-                                            pdfOpened = true;
-                                            var pdfWindow = window.open('', '$windowId', 'toolbar=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=600');
-                                            pdfWindow.document.write('<iframe src=\"$pdfDataUri\" style=\"width:100%; height:100%;\"></iframe>');
-                                            pdfWindow.onunload = function() {
-                                                pdfOpened = false;
-                                                showSuccessMessage();
-                                            };
-                                        }
-                                    }
-                                    openPdf();
+                            function openPdf() {
+                                if (!pdfOpened) {
+                                    pdfOpened = true;
+                                    var pdfWindow = window.open('', '$windowId', 'toolbar=0,status=0,menubar=0,scrollbars=1,resizable=1,width=800,height=600');
+                                    pdfWindow.document.write('<iframe src=\"$pdfDataUri\" style=\"width:100%; height:100%;\"></iframe>');
 
-                                    function showSuccessMessage() {
-                                        // Show an alert message when the PDF window is closed
-                                        setTimeout(function() {
-                                            alert('Record created successfully.');
-                                            window.location.href = '$url';
-                                        }, 1000);
-                                    }
-                                </script>
-                                ";
+                                    pdfWindow.onunload = function() {
+                                        pdfOpened = false;
+                                        showSuccessMessage();
+                                    };
+                                }
+                            }
+                            openPdf();
+
+                            function showSuccessMessage() {
+                                // Redirect directly when the PDF window is closed
+                                window.location.href = '$url';
+                            }
+                        </script>
+                    ";
 
                         // Return the JavaScript function as a response
                         return response($script);

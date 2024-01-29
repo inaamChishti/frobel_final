@@ -77,6 +77,6 @@ class Kernel extends HttpKernel
 
 
 
-        
+
     ];
 }

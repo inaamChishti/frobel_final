@@ -27,6 +27,7 @@ class User extends Authenticatable
         'email',
         'password',
         'usertype',
+        'is_sent',
 
         // 'custom_password'
     ];
