@@ -109,10 +109,41 @@
 
 
                     </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label" style="font-weight: bold;font-size:18px;">Subject:</label>
+                        <select id="subject_list" name="subject" style="font: 17px sans-serif;"
+                            class="custom-select">
+                            <option selected disabled>Select subject</option>
+                            @foreach($subjects as $subject)
+                            <option value="{{$subject->name}}">{{$subject->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label" style="font-weight: bold;font-size:18px;">Time Slot:</label>
+                        <select id="time_slot" name="time_slot" style="font: 17px sans-serif;"
+                            class="custom-select">
+
+
+                                <option selected disabled >Choose time</option>
+                                <option value="09:00 - 11:00am">09:00 - 11:00am</option>
+                                <option value="11:00 - 01:00pm">11:00 - 01:00pm</option>
+                                <option value="11:20 - 01:20pm">11:20 - 01:20pm</option>
+                                <option value="11:30 - 01:30pm">11:30 - 01:30pm</option>
+                                <option value="01:30 - 03:30pm">01:30 - 03:30pm</option>
+                                <option value="02:00 - 04:00pm">02:00 - 04:00pm</option>
+                                <option value="03:45 - 05:45pm">03:45 - 05:45pm</option>
+                                <option value="04:15 - 06:15pm">04:15 - 06:15pm</option>
+                                <option value="04:30 - 06:30pm">04:30 - 06:30pm</option>
+                                <option value="06:45 - 08:45pm">06:45 - 08:45pm</option>
+                            </select>
+                        </select>
+                    </div>
                     {{-- below code is for select current date when form load --}}
 
 
-                    <div class="col-md-3 col-xl-2 mb-4">
+                    <div class="col-md-3 col-xl-2 mb-4" style="margin-top: 33px;">
                         <button type="button" class="btn btn-warning"
                             style="background-image: linear-gradient(to right,
 #ffa40d ,#ffc801); !important"
@@ -137,6 +168,7 @@
                             <th style="font-weight: bold; font-size: 18px;">year:</th>
                             <th style="font-weight: bold;font-size:18px;">Teacher</th>
                             <th style="font-weight: bold;font-size:18px;">Subject</th>
+                            <th style="font-weight: bold;font-size:18px;">Time Slot</th>
                             <th style="font-weight: bold;font-size:18px;">BK + CH</th>
                             <th style="font-weight: bold;font-size:18px;">Session</th>
                         </tr>
@@ -193,22 +225,30 @@
             var selectElement = document.getElementById("student_id");
             var fromDateElement = document.getElementById("from_date");
             var toDateElement = document.getElementById("to_date");
+            var time_slotElement = document.getElementById("time_slot");
+            var subject_listElement = document.getElementById("subject_list");
 
             // Function to handle changes in the elements
             function handleElementChange() {
-                var selectedValue = selectElement.value;
-                var fromDate = fromDateElement.value;
-                var toDate = toDateElement.value;
+            var selectedValue = selectElement.value;
+            var fromDate = fromDateElement.value;
+            var toDate = toDateElement.value;
+            var timeSlot = time_slotElement.value; // Fetch the value of time slot
+            var subject = subject_listElement.value; // Fetch the value of subject
 
-                // Update the DataTable based on the selected values
-                table.clear().draw();
-                table.ajax.url("{{ route('admin.attendance.viewz') }}?selectedValue=" + selectedValue).load();
+            // Update the DataTable based on the selected values
+            table.clear().draw();
+            table.ajax.url("{{ route('admin.attendance.viewz') }}?selectedValue=" + selectedValue +
+                "&fromDate=" + fromDate + "&toDate=" + toDate + "&timeSlot=" + timeSlot + "&subject=" + subject).load();
 
-                // Perform other actions specific to the change event
-                console.log("Selected Student ID: " + selectedValue);
-                console.log("Selected From Date: " + fromDate);
-                console.log("Selected To Date: " + toDate);
-            }
+            // Perform other actions specific to the change event
+            console.log("Selected Student ID: " + selectedValue);
+            console.log("Selected From Date: " + fromDate);
+            console.log("Selected To Date: " + toDate);
+            console.log("Selected Time Slot: " + timeSlot);
+            console.log("Selected Subject: " + subject);
+        }
+
 
             // Add event listener for student_id select element
             selectElement.addEventListener("change", handleElementChange);
@@ -218,6 +258,10 @@
 
             // Add event listener for to_date input element
             toDateElement.addEventListener("change", handleElementChange);
+
+            time_slotElement.addEventListener("change", handleElementChange);
+
+            subject_listElement.addEventListener("change", handleElementChange);
 
 
 
@@ -250,6 +294,9 @@
                     },
                     {
                         data: 'subject'
+                    },
+                    {
+                        data: 'time_slot'
                     },
                     {
                         data: 'bk_ch'

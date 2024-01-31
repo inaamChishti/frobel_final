@@ -124,7 +124,7 @@ return response()->json(['message' => 'Attendance entry created successfully'], 
     }
     public function viewz(Request $request)
     {
-        //  dd($request->all());
+        //  dd($request->all(), $request->input('timeSlot'),$request->input('subject'));
 
         $family_id = $request->columns[0]['search']['value'];
         $selectedValue = $request->input('selectedValue');
@@ -132,16 +132,109 @@ return response()->json(['message' => 'Attendance entry created successfully'], 
         // $toDate = Carbon::createFromFormat('d/m/Y', $request->input('to_date'))->format('Y-m-d');
         $fromDate = $request->input('from_date');
         $toDate = $request->input('to_date');
-
+        $timeSlot = $request->input('timeSlot');
+        $subject = $request->input('subject');
+        // dd($fromDate,$toDate,$timeSlot,$subject,$selectedValue,$family_id);
         if ($request->ajax()) {
             $query = Attendance::query();
-            $query->select('id', 'family_id', 'student_name','student_year_in_school as year', 'teacher_name', 'subject', 'bk_ch', 'session_1', 'date');
-            $attendances = $query->where('family_id', $family_id)
-            // ->where('student_name', 'like', $selectedValue . '%')
-            ->where('student_name', 'like', '%' . $selectedValue . '%')
 
-            ->whereBetween('date', [$fromDate, $toDate])
-            ->get();
+            if(isset($family_id) && is_numeric($family_id) && $selectedValue !== "Choose name" && strpos($fromDate, '-') !== false && strpos($toDate, '-') !== false  )
+            {
+                $query->select('id', 'family_id', 'student_name','student_year_in_school as year', 'teacher_name', 'subject', 'time_slot', 'bk_ch', 'session_1', 'date');
+                $attendances = $query
+                ->where('family_id', $family_id)
+                ->where('student_name', 'like', '%' . $selectedValue . '%')
+                ->whereBetween('date', [$fromDate, $toDate])
+                ->get()->take(5);
+                // dd($attendances,$family_id,$selectedValue);
+            }
+            if(isset($family_id) && is_numeric($family_id) && $selectedValue !== "Choose name" && strpos($fromDate, '-') !== false && strpos($toDate, '-') !== false &&  !empty($subject) && $subject !== "null" && $subject !== "Select subject"  )
+            {
+                $query->select('id', 'family_id', 'student_name','student_year_in_school as year', 'teacher_name', 'subject', 'time_slot', 'bk_ch', 'session_1', 'date');
+                $attendances = $query
+                ->where('family_id', $family_id)
+                ->where('student_name', 'like', '%' . $selectedValue . '%')
+                ->whereBetween('date', [$fromDate, $toDate])
+                ->get()->take(5);
+                // dd($attendances,$family_id,$selectedValue);
+            }
+
+            if(isset($family_id) && is_numeric($family_id) && $selectedValue !== "Choose name" && strpos($fromDate, '-') !== false && strpos($toDate, '-') !== false &&  !empty($subject) && $subject !== "null" && $subject !== "Select subject" && strpos($timeSlot, ':') !== false  )
+            {
+                $query->select('id', 'family_id', 'student_name','student_year_in_school as year', 'teacher_name', 'subject', 'time_slot', 'bk_ch', 'session_1', 'date');
+                $attendances = $query
+                ->where('family_id', $family_id)
+                ->where('student_name', 'like', '%' . $selectedValue . '%')
+                ->where('time_slot',$timeSlot)
+                ->whereBetween('date', [$fromDate, $toDate])
+                ->get();
+            }
+
+
+            if (strpos($fromDate, '-') !== false && strpos($toDate, '-') !== false && strpos($timeSlot, ':') !== false && !empty($subject) && $subject !== "null" && $subject !== "Select subject")
+            {
+                $query->select('id', 'family_id', 'student_name','student_year_in_school as year', 'teacher_name', 'subject', 'time_slot', 'bk_ch', 'session_1', 'date');
+                $attendances = $query
+                // ->where('family_id', $family_id)
+                ->where('subject', $subject)
+                ->where('time_slot',$timeSlot)
+                ->whereBetween('date', [$fromDate, $toDate])
+                ->get();
+            }
+            if (strpos($fromDate, '-') !== false && strpos($toDate, '-') !== false  && !empty($subject) && $subject !== "null" && $subject !== "Select subject")
+            {
+                $query->select('id', 'family_id', 'student_name','student_year_in_school as year', 'teacher_name', 'subject', 'time_slot', 'bk_ch', 'session_1', 'date');
+                $attendances = $query
+                // ->where('family_id', $family_id)
+                ->where('subject', $subject)
+                // ->where('time_slot',$timeSlot)
+                ->whereBetween('date', [$fromDate, $toDate])
+                ->get();
+            }
+
+            if (isset($family_id) && is_numeric($family_id) && isset($selectedValue) && $selectedValue !== "Choose name")
+            {
+                $query->select('id', 'family_id', 'student_name','student_year_in_school as year', 'teacher_name', 'subject', 'time_slot', 'bk_ch', 'session_1', 'date');
+                $attendances = $query->where('family_id', $family_id)
+                // ->where('student_name', 'like', $selectedValue . '%')
+                ->where('student_name', 'like', '%' . $selectedValue . '%')
+
+                // ->whereBetween('date', [$fromDate, $toDate])
+                ->get();
+            }
+            if (strpos($timeSlot, ':') !== false)
+            {
+                $query->select('id', 'family_id', 'student_name','student_year_in_school as year', 'teacher_name', 'subject', 'time_slot', 'bk_ch', 'session_1', 'date');
+                $attendances = $query
+                ->where('time_slot',$timeSlot)
+                ->get();
+
+            }
+            if (strpos($timeSlot, ':') !== false && !empty($subject) && $subject !== "null" && $subject !== "Select subject")
+            {
+                $query->select('id', 'family_id', 'student_name','student_year_in_school as year', 'teacher_name', 'subject', 'time_slot', 'bk_ch', 'session_1', 'date');
+                $attendances = $query->where('subject', $subject)
+                ->where('time_slot',$timeSlot)
+                ->get();
+                // dd($subject,$timeSlot);
+
+            }
+            if ($subject !== "null" && $subject !== "Select subject")
+            {
+                $query->select('id', 'family_id', 'student_name','student_year_in_school as year', 'teacher_name', 'subject', 'time_slot', 'bk_ch', 'session_1', 'date');
+                $attendances = $query->where('subject', $subject)
+                ->get();
+                // dd($subject,$timeSlot);
+
+            }
+            if ($timeSlot === "Choose time" && $subject === "Select subject" && $selectedValue === "Choose name" && $family_id === null)
+            {
+                $query->select('id', 'family_id', 'student_name','student_year_in_school as year', 'teacher_name', 'subject','time_slot', 'bk_ch', 'session_1', 'date');
+                $attendances = $query->whereBetween('date', [$fromDate, $toDate])->get();
+            }
+
+
+
 
 
             return Datatables::of($attendances)
@@ -165,22 +258,14 @@ return response()->json(['message' => 'Attendance entry created successfully'], 
 
     public function view(Request $request)
     {
-
-
             $fromDate = $request->from_date;
             $toDate = $request->to_date;
             $attendances = array();
-
             if ($request->ajax()) {
-
             $query = Attendance::query();
-            $query->select('id', 'family_id', 'student_name', 'student_year_in_school as year', 'teacher_name', 'subject', 'bk_ch', 'session_1', 'date');
-
+            $query->select('id', 'family_id', 'student_name', 'student_year_in_school as year', 'teacher_name', 'subject', 'time_slot', 'bk_ch', 'session_1', 'date');
             // $attendances = $query;
             $attendances = $query->orderBy('date', 'desc');
-
-
-
             return Datatables::of($attendances)
                 ->addIndexColumn()
                 ->addColumn('date', function($row){
@@ -196,10 +281,9 @@ return response()->json(['message' => 'Attendance entry created successfully'], 
                 })
                 ->rawColumns(['action'])
                 ->make(true);
-
         }
-
-        return view('auth.attendance.view', compact('attendances'));
+        $subjects = Subject::all();
+        return view('auth.attendance.view', compact('attendances','subjects'));
     }
     public function show(Request $request)
     {

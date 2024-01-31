@@ -11,10 +11,11 @@ use Spatie\Activitylog\Contracts\Activity;
 class StudentTest extends Model
 {
     use HasFactory, LogsActivity;
+    public $timestamps = false;
 
     protected $dates = ['date'];
 
-    protected $fillable = ['family_id', 'student_name', 'subject', 'book' , 'test_no' , 'attempt', 'test_date' , 'percentage', 'status' , 'tutor', 'updated_by'];
+    protected $fillable = ['family_id', 'student_name', 'subject', 'book' , 'test_no' , 'attempt', 'test_date' , 'percentage', 'status' , 'tutor', 'tutor_updated_by'];
 
     public function getActivitylogOptions(): LogOptions
     {

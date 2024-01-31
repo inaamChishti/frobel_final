@@ -9,75 +9,115 @@
 <div class="container-fluid flex-grow-1 container-p-y">
 
     <h4 class="font-weight-bold py-3 mb-4">
-      <span class="text-muted font-weight-light">Student Tests /</span> Teacher Comment
+        <span class="text-muted font-weight-light">Student Tests /</span> Teacher Comment
     </h4>
 
-
-    <!--Start Add New User -->
-    <div class="modal fade" id="ajaxModal" tabindex="-1" aria-labelledby="ajaxModalLabel" aria-hidden="true">
+    <!-- Start Add New User -->
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="modalHeading"></h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
-            </div>
-            <div class="modal-body">
-                <form id="userForm" name="userForm">
-                    @csrf
-                    <input type="hidden" name="comment_id" id="role_id">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalHeading">Edit Comment</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm" name="editForm">
+                        @csrf
+                        <input type="hidden" name="comment_id" id="comment_id">
+                        <input type="hidden" name="row_id" id="row_id">
 
-                    <div class="mb-3">
-                        <label for="family_id_label" class="form-label">Family ID</label>
-                        <input type="number" name="family_id" id="family_id" class="form-control" placeholder="Family Id">
-                        <span id="family_idError" class="text-danger error_messages"></span>
-                    </div>
+                        <div class="mb-3">
+                            <label for="family_id" class="form-label">Family ID</label>
+                            <input type="number" name="family_id" id="family_id" class="form-control"
+                                placeholder="Family Id" readonly>
+                            <span id="family_idError" class="text-danger error_messages"></span>
+                        </div>
 
-                    <div class="mb-3" style="float: right">
-                        <button id="show_family_button" class="btn btn-primary">Search</button>
-                    </div><br>
+                        <div class="mb-3">
+                            <label for="student" class="form-label">Students</label>
+                            <input type="text" name="student" disabled id="student" class="form-control">
+                            <span id="studentError" class="text-danger error_messages"></span>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="student" class="form-label">Students</label>
-                        <select name="student" id="student" class="form-control">
-                            <option selected disabled>Choose name</option>
-                        </select>
-                        <span id="studentError" class="text-danger error_messages"></span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="comment" class="form-label">Comment</label>
-                        <textarea name="comment" id="comment" class="form-control" cols="30" rows="3"></textarea>
-                        <span id="commentError" class="text-danger error_messages"></span>
-                    </div>
-
-                </form>
-            </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" id="saveBtn"></button>
+                        <div class="mb-3">
+                            <label for="comment" class="form-label">Comment</label>
+                            <textarea name="comment" id="comment" class="form-control" cols="30" rows="3"></textarea>
+                            <span id="commentError" class="text-danger error_messages"></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="updateBtn">Update</button>
+                </div>
             </div>
         </div>
+    </div>
+
+    <!-- Store Modal -->
+    <div class="modal fade" id="ajaxModal" tabindex="-1" aria-labelledby="ajaxModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalHeading">Add Comment</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="userForm" name="userForm">
+                        @csrf
+                        <input type="hidden" name="comment_id" id="comment_id">
+
+                        <div class="mb-3">
+                            <label for="family_id" class="form-label">Family ID</label>
+                            <input type="text" name="family_id" id="family_idd" class="form-control" placeholder="Family Id">
+                            <span id="family_idError" class="text-danger error_messages"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="student" class="form-label">Students</label>
+                            <select name="student" id="students" class="form-control">
+                                <option selected disabled>Choose name</option>
+                            </select>
+                            <span id="studentError" class="text-danger error_messages"></span>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="comment" class="form-label">Comment</label>
+                            <textarea name="comment" id="comment" class="form-control" cols="30" rows="3"></textarea>
+                            <span id="commentError" class="text-danger error_messages"></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- DataTable within card -->
     <div class="card">
-      <h6 class="card-header float-right">
-        <button type="button" id="add_new_button" data-toggle="modal" data-target="#ajaxModal"
-            class="btn btn-primary rounded-pill d-block"><span class="ion ion-md-add"></span>&nbsp; Add Comment
-        </button>
-      </h6>
+        <h6 class="card-header float-right">
+            <button type="button" id="add_new_button" data-toggle="modal" data-target="#ajaxModal"
+                class="btn btn-primary rounded-pill d-block"><span class="ion ion-md-add"></span>&nbsp; Add Comment
+            </button>
+        </h6>
 
-      <div class="card-datatable table-responsive">
+        <div class="card-datatable table-responsive">
             <table id="example" class="datatables-demo table table-striped table-bordered">
                 <thead>
                     <tr>
                         <th>Family ID</th>
                         <th>Student Name</th>
                         <th>Comment</th>
-                        <th>Commentor</th>
-                        <th>Created At</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -87,139 +127,158 @@
                         <th>Family ID</th>
                         <th>Student Name</th>
                         <th>Comment</th>
-                        <th>Commentor</th>
-                        <th>Created At</th>
+                        <th>Action</th>
                     </tr>
                 </tfoot>
             </table>
-      </div>
+        </div>
     </div>
+</div>
 
-  </div>
 @endsection
 
 @section('scripts')
 <script src="{{ asset('assets/libs/datatables/datatables.js') }}"></script>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
-        // Index role view
         var table = $('#example').DataTable({
             processing: true,
             serverSide: true,
             ajax: "{{ route('admin.comment.index') }}",
             columns: [
-                {data: 'family_id'},
-                {data: 'student_name'},
-                {data: 'comment'},
-                {data: 'commentor'},
-                {data: 'created_at'},
+                { data: 'family_id' },
+                { data: 'student_name' },
+                { data: 'comment' },
+                { data: 'action' },
             ]
         });
 
+        // Edit button click event
+        $('#example').on('click', '.editButton', function () {
+            var commentId = $(this).data('id');
+            $.ajax({
+                url: "{{ url('admin/teacher/getcomments') }}",
+                type: "GET",
+                data: { comment_id: commentId },
+                dataType: 'json',
+                success: function (data) {
+                    $('#modalHeading').html("Edit Comment");
 
-    // Save User
-    $('#saveBtn').click(function (e) {
-        e.preventDefault();
-        $(this).html('Saving...');
+                    // Append hidden row_id
+                    $('#row_id').val(commentId);
 
+                    // Replace select with text input for student
+                    $('#student').replaceWith('<input type="text" name="student" disabled id="student" class="form-control" value="' + data.student_name + '">');
+
+                    // Populate other fields
+                    $('#comment_id').val(data.id);
+                    $('#family_id').val(data.family_id);
+                    $('#comment').val(data.comment);
+                    $('#family_id').prop('readonly', true); // Disable family_id input on edit
+                    $('#editModal').modal('show');
+                },
+                error: function (error) {
+                    swal("Oops!", "Something went wrong while fetching comment details!", "error");
+                }
+            });
+        });
+
+        // Update User
+        $('#updateBtn').click(function (e) {
+    e.preventDefault();
+
+
+    $.ajax({
+        data: $('#editForm').serialize(),
+        url: "{{ url('admin/teacher/commentstore') }}", // Update the URL
+        type: "POST",
+        dataType: 'json',
+        success: function (data) {
+            $('#editForm').trigger("reset");
+            $('#editModal').modal('hide');
+            swal("Good job!", "Comment updated successfully!", "success");
+            table.draw();
+        },
+        error: function (data) {
+            // Handle errors
+            if (data.responseJSON.errors) {
+                $("#family_idError").html(data.responseJSON.errors.family_id);
+                $("#commentError").html(data.responseJSON.errors.comment);
+                $("#studentError").html(data.responseJSON.errors.student);
+            } else if (data.responseJSON.message) {
+                $("#family_idError").html(data.responseJSON.message);
+            }
+            $('#updateBtn').html('Update');
+        }
+    });
+});
+
+
+        // Save User
+        $('#saveBtn').click(function (e) {
+            e.preventDefault();
+
+
+            $.ajax({
+                data: $('#userForm').serialize(),
+                url: "{{ route('admin.comment.store') }}",
+                type: "POST",
+                dataType: 'json',
+                success: function (data) {
+                    $('#userForm').trigger("reset");
+                    $('#ajaxModal').modal('hide');
+                    swal("Good job!", "Comment saved successfully!", "success");
+                    table.draw();
+                },
+                error: function (data) {
+                    // Handle errors
+                    if (data.responseJSON.errors) {
+                        $("#family_idError").html(data.responseJSON.errors.family_id);
+                        $("#commentError").html(data.responseJSON.errors.comment);
+                        $("#studentError").html(data.responseJSON.errors.student);
+                    } else if (data.responseJSON.message) {
+                        $("#family_idError").html(data.responseJSON.message);
+                    }
+                    $('#saveBtn').html('Save');
+                }
+            });
+        });
+
+    });
+
+    $(document).ready(function () {
+    $('#family_idd').on('focusout', function () {
+        var familyId = $(this).val();
+
+        // Make an AJAX call to fetch students based on family_id
         $.ajax({
-            data: $('#userForm').serialize(),
-            url: "{{ route('admin.comment.store') }}",
-            type: "POST",
+            url: "{{ url('admin/teacher/getStudents') }}",
+            type: "GET",
+            data: { family_id: familyId },
             dataType: 'json',
             success: function (data) {
-                $('#userForm').trigger("reset");
-                $('#ajaxModal').modal('hide');
-                swal("Good job!", "Comment saved successfully!", "success");
-                table.draw();
+                // Clear existing options
+                $('#students').empty();
+
+                // Append new options
+                $.each(data, function (key, value) {
+                    $('#students').append('<option value="' + value.studentname + ' ' + value.studentsur + '">' + value.studentname + ' ' + value.studentsur + '</option>');
+                });
             },
-            error: function (data) {
-                if(data.responseJSON.errors){
-                    $("#family_idError").html(data.responseJSON.errors.family_id);
-                    $("#commentError").html(data.responseJSON.errors.comment);
-                    $("#studentError").html(data.responseJSON.errors.student);
-                }
-                else if(data.responseJSON.message){
-                    $("#family_idError").html(data.responseJSON.message);
-                }
-                $('#saveBtn').html('Save');
+            error: function (error) {
+                console.error("Error fetching students:", error);
             }
         });
     });
-
-
-
-    // button clicks and error checks
-    $('#add_new_button').click(function () {
-        $('#saveBtn').html("Save");
-        $('.error_messages').html('');
-        $('#userForm').trigger("reset");
-        $('#modalHeading').html("Create Comment");
-    });
-
-    $('#saveBtn').click(function (e) {
-        $('.error_messages').html('');
-    });
-
-
-     // Append student name in select box
-     $("#show_family_button").click(function(e){
-        e.preventDefault();
-        var family_id = $('#family_id').val();
-        if(family_id == ''){
-            $('#family_idError').html('Family Id is required');
-        }
-        else
-        {
-            $('.error_messages').html('');
-            $("#show_family_button").attr("disabled", true);
-            $('#family_idError').html('');
-            $('#student')
-                .empty()
-                .append('<option selected="selected" disabled>Choose name</option>');
-
-            $.ajax({
-                type:'POST',
-                url:'{{ route('admin.search.family') }}',
-                data:{family_id},
-                success:function(data){
-                    console.log(data)
-                    $("#show_family_button").attr("disabled", false);
-                    $.each(data, function (i, item) {
-                        $('#student').append($('<option>', {
-                            value: item.name,
-                            text : item.name
-                        }));
-                    });
-
-                },
-                error: function(error){
-                    $("#show_family_button").attr("disabled", false);
-                    if(error.responseJSON.error){
-                        swal("Oops!", error.responseJSON.error, "error");
-
-                        $('#student')
-                        .empty()
-                        .append('<option selected="selected" disabled>Choose name</option>');
-                    }
-                    else
-                    {
-                        swal("Oops!", "Something went wrong, please contact customer care!", "error");
-                    }
-                    // console.log(data.responseJSON);
-
-                }
-            });
-        }
-	});
-
-
 });
+
+
 </script>
+
 @endsection

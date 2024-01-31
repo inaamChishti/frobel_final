@@ -33,10 +33,12 @@
                     <select name="student_name" id="student_name" class="form-control">
                         <option value="" selected>Choose Option</option>
 
+
                         @if (count($students) > 0)
+
                             @foreach ($students as $student)
                             @php
-                            $fullName = $student->studentname . ' ' . $student->studentsur;
+                            $fullName = $student->studentname . ' ' . $student->studentname;
                             @endphp
                             <option style="color: black;" value="{{ $fullName }}">{{ $fullName }}</option>
                                 @endforeach
@@ -258,8 +260,8 @@ $('#saveBtn').click(function (e) {
                     success: function (data) {
                         $.each(data, function (i, item) {
                             $('#student_name').append($('<option>', {
-                                value: item.name,
-                                text : item.name
+                                value: item.studentname,
+                                text : item.studentname
                             }));
                         });
                     },

@@ -10,7 +10,9 @@ class StudentController extends Controller
 {
     public function getFamilyStudents($familyId)
     {
-        $students = Student::where('admission_id', $familyId)->get();
+
+        $students = Student::where('admissionid', $familyId)->get();
+
         return $students;
     }
 }

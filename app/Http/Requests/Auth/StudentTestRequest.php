@@ -24,16 +24,16 @@ class StudentTestRequest extends FormRequest
     public function rules()
     {
         return [
-            'family_id' => ['required', 'integer'],
+            'family_id' => ['required'],
             'student_name' => ['required'],
-            'subject' => ['nullable'],
-            'book' => ['nullable', 'string', 'max:255'],
-            'test_no' => ['nullable', 'string', 'max:255'],
-            'attempt' => ['nullable', 'string', 'max:255'],
-            'date' => ['nullable', 'date'],
-            'percentage' => ['nullable', 'string'],
-            'status' => ['nullable', 'string', 'max:255'],
-            'tutor_updated_by' => ['nullable', 'string', 'max:255']
+            'subject' => ['required'],
+            'book' => ['required'],
+            'test_no' => ['required'],
+            'attempt' => ['required'],
+            'date' => ['required'],
+            'percentage' => ['required'],
+            'status' => ['required'],
+            'updated_by' => ['required'],
         ];
     }
 }

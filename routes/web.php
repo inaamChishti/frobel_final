@@ -249,7 +249,15 @@ Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function(){
         // Teacher Comments
         Route::get('teacher/comment', [CommentController::class, 'index'])->name('comment.index');
         Route::post('teacher/comment', [CommentController::class, 'store'])->name('comment.store');
+        Route::get('teacher/commentdestroy/{id}', [StudentTestController::class, 'commentdestroy']);
+        Route::get('teacher/getcomments', [StudentTestController::class, 'getcomments']);
+        Route::post('teacher/commentstore', [StudentTestController::class, 'commentstore']);
+        Route::get('teacher/getStudents', [StudentTestController::class, 'getStudents']);
+
+
         // Student Tests
+
+
         Route::get('student/tests', [StudentTestController::class, 'index'])->name('student.test.index');
         Route::get('student/tests/create', [StudentTestController::class, 'create'])->name('student.test.create');
         Route::post('student/tests', [StudentTestController::class, 'import'])->name('student-test.import');

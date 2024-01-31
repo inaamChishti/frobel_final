@@ -18,29 +18,24 @@ class CommentController extends Controller
 {
     public function index(Request $request)
     {
-        $comments = Comment::select('id', 'family_id', 'student_name', 'comment', 'commentor', 'created_at');
+        $comments = Comment::select('id', 'family_id', 'student_name', 'comment')->get();
+
         if ($request->ajax()) {
             return Datatables::of($comments)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
-                    // <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" title="View" class="btn btn-sm btn-success view viewButton">View </a>
+                    $deleteUrl = url('admin/teacher/commentdestroy', $row->id);
                     $btn = '
                     <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" title="Edit" class="btn btn-sm btn-primary edit editButton">Edit </a>
-                    <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" title="Delete" class="btn btn-sm btn-danger del deleteButton">Delete </a>
+                    <a href="'.$deleteUrl.'" data-toggle="tooltip"  data-id="'.$row->id.'" title="Delete" class="btn btn-sm btn-danger del deleteButton">Delete </a>
                         ';
                     return $btn;
-                })
-                ->addColumn('created_at', function($row){
-                    if($row->created_at){
-                        $timeStamp = strtotime($row->created_at);
-                        $date = date('d-m-Y', $timeStamp);
-                        $time = date('H:i:s', $timeStamp);
-                        return $time.' '.$date;
-                    }
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
+
+
         return view('auth.comment.index');
     }
     public function store(CommentRequest $request)
