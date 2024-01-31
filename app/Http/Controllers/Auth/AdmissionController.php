@@ -553,6 +553,7 @@ class AdmissionController extends Controller
     {
         $rules = [
             'name' => 'required|string',
+            'joining_date' => 'required|string',
             'subject' => [
                 'required',
                 'string',
@@ -571,6 +572,7 @@ class AdmissionController extends Controller
         DB::table('teachers_subject')->insert([
             'teacher_name' => $request->name,
             'subject' => $request->subject,
+            'joining_date' => $request->joining_date,
         ]);
 
         return redirect()->back()->with('success', 'Teacher roster added successfully!');
@@ -596,13 +598,33 @@ class AdmissionController extends Controller
     {
         $teacherId = $request->input('teacherId');
         $newTeacherName = $request->input('teacherName');
+        $joiningDate = $request->input('joining_date');
+
+        // Check if both "teacherName" and "joining_date" are null, then do nothing
+        if ($newTeacherName === null && $joiningDate === null) {
+            return redirect()->back()->with('warning', 'No updates were made.');
+        }
+
+        // Set the fields to update
+        $updateFields = [];
+
+        // Check if the teacherName is not null, then add it to the update fields
+        if ($newTeacherName !== null) {
+            $updateFields['teacher_name'] = $newTeacherName;
+        }
+
+        // Check if the joiningDate is not null, then add it to the update fields
+        if ($joiningDate !== null) {
+            $updateFields['joining_date'] = $joiningDate;
+        }
 
         // Update the record in the "teachers_subject" table
-        DB::table('teachers_subject')->where('id', $teacherId)->update([
-            'teacher_name' => $newTeacherName,
-            // Add other fields you want to update
-        ]);
+        DB::table('teachers_subject')->where('id', $teacherId)->update($updateFields);
+
         return redirect()->back()->with('success', 'Roster entry updated successfully.');
     }
+
+
+
 
 }

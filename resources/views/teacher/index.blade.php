@@ -68,10 +68,15 @@
                     <form id="editForm" action="{{ url('/admin/teacher/roster/update') }}" method="post">
                         @csrf
                     <input type="hidden" id="teacherId" name="teacherId">
+                    <div class="form-group">
+                        <label class="col-form-label">Joining Date<span style="color:red;"> *</span></label>
+                        <input autocomplete="no" class="form-control" name="joining_date" value="" required type="date" >
+                    </div>
                         <div class="form-group">
                             <label for="newTeacherName">New Teacher Name:</label>
                             <input type="text" name="teacherName" class="form-control" id="newTeacherName" required>
                         </div>
+
                         <button type="button" class="btn btn-primary" onclick="submitEditForm()">Submit</button>
                     </form>
                 </div>
@@ -115,6 +120,10 @@
                                     <input autocomplete="no" class="form-control" name="name" value="{{ old('name') }}" required type="text" placeholder="Enter Name">
                                 </div>
                                 <div class="form-group">
+                                    <label class="col-form-label">Joining Date<span style="color:red;"> *</span></label>
+                                    <input autocomplete="no" class="form-control" name="joining_date" value="{{ old('joining_date') }}" required type="date" >
+                                </div>
+                                <div class="form-group">
                                     <label class="col-form-label">Select Subject<span style="color:red;"> *</span></label>
                                     <select class="form-control" name="subject" required>
                                         <option value="">Select Subject</option>
@@ -141,6 +150,7 @@
             <tr>
                 <th style="background-color: #3498db; color: #fff;">Teacher Name</th>
                 <th style="background-color: #3498db; color: #fff;">Subject</th>
+                <th style="background-color: #3498db; color: #fff;">Joining Date</th>
                 <th style="background-color: #3498db; color: #fff;">Action</th>
             </tr>
         </thead>
@@ -153,6 +163,9 @@
                         </td>
                         <td>
                             {{ $roster->subject }}
+                        </td>
+                        <td>
+                            {{ $roster->joining_date }}
                         </td>
                         <td>
                             <a href="#" onclick="editRoster('{{ $roster->teacher_name }}', '{{ $roster->id }}')" data-toggle="modal" data-target="#editModal">
